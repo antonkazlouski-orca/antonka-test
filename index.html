@@ -59,6 +59,7 @@
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
+                videoId: 'dQw4w9WgXcQ',
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange
@@ -69,39 +70,92 @@
                     'start': 43,
                     'controls': 1,
                     'enablejsapi': 1,
-                    'playsinline': 1
+                    'playsinline': 1,
+                    'origin': window.location.origin
                 }
             });
         }
         
         function onPlayerReady(event) {
-            // Make sure video starts playing when ready
-            event.target.playVideo();
+            // Start playing immediately
+            player.playVideo();
             
-            // Try to unmute earlier - most browsers require some form of user interaction
-            setTimeout(function() {
-                player.unMute();
-                player.setVolume(100);
-                player.playVideo();
-            }, 300); // Try after 300ms
+            // Set up multiple attempts to unmute
+            for (let i = 1; i <= 5; i++) {
+                setTimeout(function() {
+                    try {
+                        player.unMute();
+                        player.setVolume(100);
+                        player.playVideo();
+                        console.log("Attempt " + i + " to unmute and play");
+                    } catch(e) {
+                        console.error("Error in unmute attempt " + i, e);
+                    }
+                }, i * 300); // Try every 300ms for 5 times
+            }
+            
+            // Force user interaction simulation
+            simulateUserInteraction();
+        }
+        
+        function simulateUserInteraction() {
+            // Multiple methods to simulate user interaction
+            try {
+                // Click at various positions on the page
+                document.body.click();
+                document.documentElement.click();
+                document.getElementById('interactionHelper').click();
+                
+                // Create and trigger events
+                const clickEvent = new MouseEvent('click', {
+                    'view': window,
+                    'bubbles': true,
+                    'cancelable': true
+                });
+                document.dispatchEvent(clickEvent);
+                
+                // Try to interact with the YouTube iframe
+                if (player) {
+                    player.getIframe().contentWindow.focus();
+                }
+            } catch(e) {
+                console.error("Error in user interaction simulation", e);
+            }
         }
         
         function onPlayerStateChange(event) {
-            // When video starts playing (state=1), unmute after a short delay
-            if (event.data == YT.PlayerState.PLAYING) {
-                setTimeout(function() {
+            console.log("Player state changed to: " + event.data);
+            
+            // For any state, try to ensure playback
+            setTimeout(function() {
+                try {
+                    // If video ended or paused, restart it
+                    if (event.data != YT.PlayerState.PLAYING) {
+                        player.playVideo();
+                    }
+                    
+                    // Always try to unmute
                     player.unMute();
                     player.setVolume(100);
-                    player.playVideo(); // Ensure video continues playing after unmuting
-                }, 1000); // Wait 1 second before unmuting
-            }
-            // If video pauses (state=2), restart it
-            else if (event.data == YT.PlayerState.PAUSED) {
-                setTimeout(function() {
-                    player.playVideo();
-                }, 500);
-            }
+                    
+                    // Simulate user interaction again
+                    simulateUserInteraction();
+                } catch(e) {
+                    console.error("Error handling player state change", e);
+                }
+            }, 100);
         }
+        
+        // Fallback if YouTube API doesn't initialize properly
+        setTimeout(function() {
+            if (!player || typeof player.getPlayerState !== 'function') {
+                console.log("YouTube API didn't initialize properly, using fallback");
+                const playerContainer = document.getElementById('player');
+                if (playerContainer) {
+                    playerContainer.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&start=43&mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                }
+            }
+        }, 2000);
     </script>
 </head>
 <body>
@@ -109,7 +163,7 @@
     <button id="interactionHelper" style="position: absolute; opacity: 0; pointer-events: none;">Play</button>
     
     <div class="video-container">
-        <iframe id="player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;start=42" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay allowfullscreen></iframe>
+        <div id="player"></div>
     </div>
     
     <script>
