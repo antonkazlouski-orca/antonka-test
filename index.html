@@ -28,53 +28,16 @@
             height: 100%;
             object-fit: cover;
         }
-        #unmute-button {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            padding: 10px 20px;
-            background-color: rgba(255, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        #unmute-button:hover {
-            background-color: rgba(255, 0, 0, 0.9);
-        }
     </style>
     <script>
         setTimeout(function() {
             window.location.href = "https://github.com/orcasecurity/orca-cloud-platform/pull/3162";
-        }, 6000); 
-        
-        function toggleMute() {
-            var iframe = document.querySelector('iframe');
-            // Create a new iframe with unmuted video
-            var newIframe = document.createElement('iframe');
-            newIframe.width = "100%";
-            newIframe.height = "100%";
-            newIframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&start=43"; // No mute parameter
-            newIframe.frameBorder = "0";
-            newIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            newIframe.allowFullscreen = true;
-            
-            // Replace the old iframe with the new one
-            iframe.parentNode.replaceChild(newIframe, iframe);
-            
-            // Hide the button after use
-            document.getElementById('unmute-button').style.display = 'none';
-        }
+        }, 1000000); 
     </script>
 </head>
 <body>
     <div class="video-container">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;mute=1&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay muted allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-    <button id="unmute-button" onclick="toggleMute()">Click to UNMUTE</button>
 </body>
 </html>
