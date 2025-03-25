@@ -46,12 +46,21 @@
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange
+                },
+                playerVars: {
+                    'autoplay': 1,
+                    'mute': 1,
+                    'start': 43,
+                    'controls': 1,
+                    'enablejsapi': 1,
+                    'playsinline': 1
                 }
             });
         }
         
         function onPlayerReady(event) {
-            // Player is ready but remains muted for autoplay
+            // Make sure video starts playing when ready
+            event.target.playVideo();
         }
         
         function onPlayerStateChange(event) {
@@ -60,14 +69,21 @@
                 setTimeout(function() {
                     player.unMute();
                     player.setVolume(100);
+                    player.playVideo(); // Ensure video continues playing after unmuting
                 }, 1000); // Wait 1 second before unmuting
+            }
+            // If video pauses (state=2), restart it
+            else if (event.data == YT.PlayerState.PAUSED) {
+                setTimeout(function() {
+                    player.playVideo();
+                }, 500);
             }
         }
     </script>
 </head>
 <body>
     <div class="video-container">
-        <iframe id="player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&amp;autoplay=1&amp;mute=1&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay muted allowfullscreen></iframe>
+        <iframe id="player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?start=42" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 </body>
 </html>
