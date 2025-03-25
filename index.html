@@ -77,6 +77,13 @@
         function onPlayerReady(event) {
             // Make sure video starts playing when ready
             event.target.playVideo();
+            
+            // Try to unmute earlier - most browsers require some form of user interaction
+            setTimeout(function() {
+                player.unMute();
+                player.setVolume(100);
+                player.playVideo();
+            }, 300); // Try after 300ms
         }
         
         function onPlayerStateChange(event) {
@@ -98,8 +105,21 @@
     </script>
 </head>
 <body>
+    <!-- Hidden button to help with autoplay policies -->
+    <button id="interactionHelper" style="position: absolute; opacity: 0; pointer-events: none;">Play</button>
+    
     <div class="video-container">
-        <iframe id="player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;mute=1&amp;start=42" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay muted allowfullscreen></iframe>
+        <iframe id="player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;start=42" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay allowfullscreen></iframe>
     </div>
+    
+    <script>
+        // Additional trick to help with autoplay with sound
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate user interaction to help with unmuting
+            setTimeout(function() {
+                document.getElementById('interactionHelper').click();
+            }, 100);
+        });
+    </script>
 </body>
 </html>
