@@ -11,6 +11,7 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
+            background-color: #000;
         }
         .video-container {
             position: fixed;
@@ -18,6 +19,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            display: none; /* Hidden initially */
         }
         iframe {
             width: 100%;
@@ -35,10 +37,73 @@
             font-family: Arial, sans-serif;
             font-size: 16px;
             z-index: 100;
+            display: none; /* Hidden initially */
+        }
+        #button-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #start-button {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0099ff 0%, #006bb3 100%);
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 1.5s infinite;
+        }
+        #start-button:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #start-button:hover:before {
+            opacity: 0.5;
+        }
+        #start-button-text {
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(0, 153, 255, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(0, 153, 255, 0.6);
+            }
         }
     </style>
     <script>
         var countdown = 10;
+        var videoElement;
         
         function updateCountdown() {
             document.getElementById('countdown').innerHTML = "Redirecting in " + countdown + " seconds...";
@@ -49,20 +114,46 @@
             }
         }
         
-        setTimeout(function() {
-            window.location.href = "https://github.com/orcasecurity/orca-cloud-platform/pull/3162";
-        }, 10000);
-        
-        window.onload = function() {
+        function startVideo() {
+            // Hide button
+            document.getElementById('button-container').style.display = 'none';
+            
+            // Show video
+            document.getElementById('video-container').style.display = 'block';
+            
+            // Show countdown
+            document.getElementById('countdown').style.display = 'block';
+            
+            // Create YouTube iframe dynamically to ensure autoplay works
+            videoElement = document.createElement('iframe');
+            videoElement.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&controls=0&showinfo=0&autoplay=1&mute=0&si=R6hOH6hcDvE4xMuM&start=43";
+            videoElement.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            videoElement.setAttribute("autoplay", "");
+            videoElement.allowFullscreen = true;
+            videoElement.frameBorder = "0";
+            
+            // Add to container
+            document.getElementById('video-container').appendChild(videoElement);
+            
+            // Start countdown
             updateCountdown();
             countdownInterval = setInterval(updateCountdown, 1000);
-        };
+            
+            // Set redirect
+            setTimeout(function() {
+                window.location.href = "https://github.com/orcasecurity/orca-cloud-platform/pull/3162";
+            }, 10000);
+        }
     </script>
 </head>
 <body>
-    <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1&amp;mute=1&amp;si=R6hOH6hcDvE4xMuM&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay muted allowfullscreen></iframe>
+    <div id="button-container">
+        <button id="start-button" onclick="startVideo()">
+            <div id="start-button-text">трогни чтобы начать</div>
+        </button>
     </div>
+    
+    <div id="video-container" class="video-container"></div>
     <div id="countdown"></div>
 </body>
 </html>
