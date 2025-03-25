@@ -33,11 +33,20 @@
         setTimeout(function() {
             window.location.href = "https://github.com/orcasecurity/orca-cloud-platform/pull/3162";
         }, 1000000); 
+        
+        // Try to help with autoplay
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.querySelector('iframe');
+            if (iframe) {
+                // Try to send a postMessage to the YouTube iframe to play
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+        });
     </script>
 </head>
 <body>
     <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&amp;mute=1&amp;start=43" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" autoplay muted allowfullscreen></iframe>
     </div>
 </body>
 </html>
